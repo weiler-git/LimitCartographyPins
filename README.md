@@ -9,7 +9,7 @@ Features:
 - Can optionally add pins to cartography table.
 - Commands to remove pins from map.
 
-Terminal and Slashcommands:
+## Terminal and Slashcommands:
 ```
 /removemypins :: Removes all personal pins from map
 /removeotherspins :: Removes all pins from others from map
@@ -17,11 +17,12 @@ Terminal and Slashcommands:
 /writepindata :: Enables adding pins to cartography one time
 ```
 
-Note:
+## Note:
 Valheims orignal behavior when adding discoveries to map works like this:
 1) merge map data from cartography with yours
 2) read only your pins (including pins attained from others via cartography table)
 3) save this state to cartography table
+
 If there are pins on cartography table that you don't have, these would be deleted from table, as there is no merge function for pins.
 
 This mod changes this behaviour:
@@ -34,7 +35,10 @@ This mod changes this behaviour:
 7) continues Valheims original method for saving your pins to cartograpy table
 8) removes all your pins
 9) transfers all cached pins back to your list of pins
+
 Should an error occur in this process, your pins may be lost.
+
 Always keep a backup of your character, with new patches it is reccomended to try adding discoveries to a map table, then verify that you still have your pins on your map.
+
 In case of lost map pins, a quick alt+F4 might be enough to avoid having your character saved.
 
