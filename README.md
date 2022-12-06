@@ -10,10 +10,12 @@ Features:
 - Commands to remove pins from map.
 
 Terminal and Slashcommands:
+```
 /removemypins :: Removes all personal pins from map
 /removeotherspins :: Removes all pins from others from map
 /removeallpins :: Removes allpins from map
 /writepindata :: Enables adding pins to cartography one time
+```
 
 Note:
 Valheims orignal behavior when adding discoveries to map works like this:
