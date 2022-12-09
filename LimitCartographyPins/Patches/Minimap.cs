@@ -15,53 +15,54 @@ namespace LimitCartographyPins.Patches
         [HarmonyPatch("GetSharedMapData")]
         static void GetSharedMapData_PrefixPatch(ref List<Minimap.PinData> ___m_pins, byte[] oldMapData)
         {
-
-
-            /* VALHEIM DEFAULT BEHAVIOR
-             * writes cartography explored map with your explored map
-             * reads YOUR pins
-             * writes ONLY YOUR pins to table
-             * pins not in your map is therefor removed by default!
-             * 
-             * As we want pin write on demand, we need to read existing pins from the byte array, then merge yours IF yours are suppose to be added
-             * algorithm for reading package is copied from the games method as it needs to match
-             * 
-             */
-
-
+            /// VALHEIM DEFAULT BEHAVIOR
+            // writes cartography explored map with your explored map
+            // reads YOUR pins
+            // writes ONLY YOUR pins to table
+            // pins not in your map is therefor removed by default!
+            // 
+            // As we want pin write on demand, we need to read existing pins from the byte array, then merge yours IF yours are suppose to be added
+            // algorithm for reading package is copied from the games method as it needs to match
+            // 
+            ///
             List<Minimap.PinData> pinsOnTable = new List<Minimap.PinData>();
-            //read oldMapData Package
-            ZPackage zPackage = new ZPackage(oldMapData);
-            int num = zPackage.ReadInt();
-            List<bool> list = Minimap.instance.ReadExploredArray(zPackage, num);
-            if (list == null)
+            if (oldMapData != null)
             {
-                //return false; we dont care about explored, only pins are overwritten
-            }
-            if (num >= 2)
-            {
-                long playerID = Player.m_localPlayer.GetPlayerID();
-                int num3 = zPackage.ReadInt();
-                for (int k = 0; k < num3; k++)
+                //read oldMapData Package
+                ZPackage zPackage = new ZPackage(oldMapData);
+                int num = zPackage.ReadInt();
+                List<bool> list = Minimap.instance.ReadExploredArray(zPackage, num);
+                if (list == null)
                 {
-                    Minimap.PinData pin = new PinData();
-                    //pindata
-                    long num4 = zPackage.ReadLong();
-                    string text = zPackage.ReadString();
-                    Vector3 pos = zPackage.ReadVector3();
-                    PinType type = (PinType)zPackage.ReadInt();
-                    bool isChecked = zPackage.ReadBool();
+                    //return false; we dont care about explored, only pins are overwritten
+                }
+                if (num >= 2)
+                {
+                    long playerID = Player.m_localPlayer.GetPlayerID();
+                    int num3 = zPackage.ReadInt();
+                    for (int k = 0; k < num3; k++)
+                    {
+                        Minimap.PinData pin = new PinData();
+                        //pindata
+                        long num4 = zPackage.ReadLong();
+                        string text = zPackage.ReadString();
+                        Vector3 pos = zPackage.ReadVector3();
+                        PinType type = (PinType)zPackage.ReadInt();
+                        bool isChecked = zPackage.ReadBool();
 
-                    pin.m_ownerID = num4;
-                    pin.m_name = text;
-                    pin.m_pos = pos;
-                    pin.m_type = type;
-                    pin.m_checked = isChecked;
-                    pin.m_save = true;
-                    if (!HavePinInRange(pinsOnTable, pin.m_pos, 1f))
-                        pinsOnTable.Add(pin);
+                        pin.m_ownerID = num4;
+                        pin.m_name = text;
+                        pin.m_pos = pos;
+                        pin.m_type = type;
+                        pin.m_checked = isChecked;
+                        pin.m_save = true;
+                        if (!HavePinInRange(pinsOnTable, pin.m_pos, 1f))
+                            pinsOnTable.Add(pin);
+                    }
                 }
             }
+
+            
 
 
 
@@ -71,6 +72,7 @@ namespace LimitCartographyPins.Patches
 
 
             //reset own cache
+
             pins.Clear();
 
             //store everything in own cache
@@ -79,19 +81,29 @@ namespace LimitCartographyPins.Patches
                 pins.Add(pin);
             }
 
-            //store non-player pins (preserves pins like bosses), death pins are removed in the original valheim code
+            Debug.Log($"WritePinDataOnce? {WritePinDataOnce}");
+            //store my pins
             List<Minimap.PinData> pinsToKeep = new List<Minimap.PinData>();
             foreach (Minimap.PinData pin in ___m_pins)
             {
 
-                if (!(pin.m_type == Minimap.PinType.Icon0
+                if ((pin.m_type == Minimap.PinType.Boss
+                    || pin.m_type == Minimap.PinType.None)
+                    )
+                {
+                    pinsToKeep.Add(pin);
+                }
+                if (WritePinDataOnce) //if writing enabled, write player pins
+                {
+                    if ((pin.m_type == Minimap.PinType.Icon0
                     || pin.m_type == Minimap.PinType.Icon1
                     || pin.m_type == Minimap.PinType.Icon2
                     || pin.m_type == Minimap.PinType.Icon3
                     || pin.m_type == Minimap.PinType.Icon4)
                     )
-                {
-                    pinsToKeep.Add(pin);
+                    {
+                        pinsToKeep.Add(pin);
+                    }
                 }
             }
 
@@ -103,24 +115,22 @@ namespace LimitCartographyPins.Patches
             {
                 if (!HavePinInRange(___m_pins, pin.m_pos, 1f))
                     ___m_pins.Add(pin);
+                    //Debug.Log($"pin add from table {pin.m_type.ToString()}");
             }
 
-            //add non-player pins, if adding own pins is enabled
-            if (WritePinDataOnce)
+
+            foreach (Minimap.PinData pin in pinsToKeep)
             {
-                foreach (Minimap.PinData pin in pinsToKeep)
-                {
-                    if (!HavePinInRange(___m_pins, pin.m_pos, 1f))
-                        ___m_pins.Add(pin);
-                }
+                if (!HavePinInRange(___m_pins, pin.m_pos, 1f))
+                    //Debug.Log($"pin add from me {pin.m_type.ToString()}");
+                ___m_pins.Add(pin);
             }
-
 
 
 
 
         }
-
+        
         [HarmonyPostfix]
         [HarmonyPatch("GetSharedMapData")]
         static void GetSharedMapData_PostfixPatch(ref List<Minimap.PinData> ___m_pins)
