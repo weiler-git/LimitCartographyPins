@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using static Terminal;
 
 namespace LimitCartographyPins.Patches
 {
@@ -13,25 +14,23 @@ namespace LimitCartographyPins.Patches
         [HarmonyPatch("InitTerminal")]
         static void InitTerminal_Patch()
         {
-            new Terminal.ConsoleCommand("removemypins", "Removes all personal pins from map", (args =>
+
+            new Terminal.ConsoleCommand("removemypins", "Removes all personal pins from map", delegate (ConsoleEventArgs args)
             {
                 RemoveMyPins(args.Context, args.Args);
-            }), false);
-
-            new Terminal.ConsoleCommand("removeotherspins", "Removes all pins from others from map", (args =>
+            });
+            new Terminal.ConsoleCommand("removeotherspins", "Removes all pins from others from map", delegate (ConsoleEventArgs args)
             {
                 RemoveOthersPins(args.Context, args.Args);
-            }), false);
-
-            new Terminal.ConsoleCommand("removeallpins", "Removes allpins from map", (args =>
+            });
+            new Terminal.ConsoleCommand("removeallpins", "Removes allpins from map", delegate (ConsoleEventArgs args)
             {
                 RemoveAllPins(args.Context, args.Args);
-            }), false);
-
-            new Terminal.ConsoleCommand("writepindata", "Enables adding pins to cartography one time", (args =>
+            });
+            new Terminal.ConsoleCommand("writepindata", "writepindata", delegate (ConsoleEventArgs args)
             {
                 WritePinData(args.Context, args.Args);
-            }), false);
+            });
         }
 
 
