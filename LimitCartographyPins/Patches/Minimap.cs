@@ -28,7 +28,7 @@ namespace LimitCartographyPins.Patches
             List<Minimap.PinData> pinsOnTable = new List<Minimap.PinData>();
             if (oldMapData != null)
             {
-                //read oldMapData Package
+                //read oldMapData Package (see public bool AddSharedMapData(byte[] dataArray))
                 ZPackage zPackage = new ZPackage(oldMapData);
                 int num = zPackage.ReadInt();
                 List<bool> list = Minimap.instance.ReadExploredArray(zPackage, num);
@@ -49,8 +49,15 @@ namespace LimitCartographyPins.Patches
                         Vector3 pos = zPackage.ReadVector3();
                         PinType type = (PinType)zPackage.ReadInt();
                         bool isChecked = zPackage.ReadBool();
+                        string author = ((num >= 3) ? zPackage.ReadString() : "");
+                        //dont replace num4/authorID with 0L (self), we are not copying this to our own map
+                        //if (num4 == playerID)
+                        //{
+                        //    num4 = 0L;
+                        //}
 
                         pin.m_ownerID = num4;
+                        pin.m_author = author;
                         pin.m_name = text;
                         pin.m_pos = pos;
                         pin.m_type = type;
