@@ -22,8 +22,8 @@ Install with mod manager or manually extract into BepInEx\plugins directory.
 
 Client side only, no need to install on server as this mod only alters how you add data to the cartogarphy table
 
-## Note:
-Valheims new orignal behavior when adding discoveries to map works like this:
+## Plugin Details:
+### Valheims new orignal behavior when adding discoveries to map works like this:
 
 When clicking Read on map table:
 - Merge explored map into yours
@@ -40,7 +40,7 @@ When clicking Write on map table:
 - Add your pins into package
 - Send to Owner/Host over RPC
 
-This mod changes to this behaviour:
+### This mod changes to this behaviour:
 
 When reading map:
 - Skip deleting others pins from your map
@@ -55,9 +55,9 @@ When writing to map:
 - Player Pins (the pins players can make themselves), will be skipped by default.
 - Duplicate pins will be skipped.
 - The merged data will be sent by RPC to Owner/Area Host
->Slash command allows player to add their own Player Pins to the map
+>Slash command allows you to add Player Pins to the map
  
-Why have it like this:
+### Why have it like this:
 - We have a public map that everyone can read from, with a designated character adding pins for various world locations.
 - Teams have their own map, can share pins as they wish, and can read pins from public table without removing the teams pins and vice versa.
 - Players might want their own map table to share between alts.
