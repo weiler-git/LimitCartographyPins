@@ -45,8 +45,8 @@ This mod changes to this behaviour:
 When reading map:
 - Skip deleting others pins from your map
 - Get all pins from the map table, including those you have made yourself
-- >>Slash commands allows you to delete pins from your map.
-- >>Map table can be rebuild if you want to erase all records.
+>Slash commands allows you to delete pins from your map.
+>Map table can be rebuild if you want to erase all records.
 
 When writing to map:
 - Skip the read operation and bypass most of the original merge code
@@ -55,7 +55,7 @@ When writing to map:
 - Player Pins (the pins players can make themselves), will be skipped by default.
 - Duplicate pins will be skipped.
 - The merged data will be sent by RPC to Owner/Area Host
-- >>Slash command allows player to add their own Player Pins to the map
+>Slash command allows player to add their own Player Pins to the map
  
 Why have it like this:
 - We have a public map that everyone can read from, with a designated character adding pins for various world locations.
