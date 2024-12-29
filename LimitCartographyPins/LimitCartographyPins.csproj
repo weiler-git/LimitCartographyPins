@@ -79,6 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Patches\MapTable.cs" />
     <Compile Include="Patches\Minimap.cs" />
     <Compile Include="Patches\Terminal.cs" />
     <Compile Include="Plugin.cs" />

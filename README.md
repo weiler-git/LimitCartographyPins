@@ -1,11 +1,11 @@
 # LimitCartographyPins
 
-Valheim mod to limit number of pins added to cartography table.
+Valheim plugin to limit number of pins added to cartography table.
 
-Strongly adviced to keep a backup of your character as this mod could delete all your pins.
+Strongly adviced to keep a backup of your character as this mod could potentially delete all your pins, be extra careful after game patches.
 
 Features:
-- Adds only explored map to cartography table by default.
+- Adds only explored map and boss locations to cartography table by default.
 - Can optionally add pins to cartography table.
 - Commands to remove pins from map.
 
@@ -23,27 +23,50 @@ Install with mod manager or manually extract into BepInEx\plugins directory.
 Client side only, no need to install on server as this mod only alters how you add data to the cartogarphy table
 
 ## Note:
-Valheims orignal behavior when adding discoveries to map works like this:
-1) Merge map data from cartography with yours
-2) Read only your pins (including pins attained from others via cartography table)
-3) Save this state to cartography table
+Valheims new orignal behavior when adding discoveries to map works like this:
 
-If there are pins on cartography table that you don't have, these would be deleted from table, as there is no merge function for pins.
+When clicking Read on map table:
+- Merge explored map into yours
+- Delete others pins from your map
+- Import pins from table
+- Skip importing pins close to existing pins
+- Skip importing pins created by yourself
 
-This mod changes this behaviour:
-1) Unchanged - merge map data from cartography with yours
-2) Read cartograpy table pins
-3) Transfer all your pins into a temporary cache
-4) Remove all your pins
-5) Add cartograpy table pins to your list of pins
-6) Add pins from cache to your list of pins - if /writepindata has been executed, and if not duplicate with cartograpy table pins
-7) Continues Valheims original method for saving your pins to cartograpy table
-8) Removes all your pins
-9) Transfers all cached pins back to your list of pins
+When clicking Write on map table:
+- Read map table into your own map as if you click read (inlcuding delete others pins from your own map)
+- Merge with your map
+- Read map again from table
+- Merge your map with table map into package
+- Add your pins into package
+- Send to Owner/Host over RPC
 
-Should an error occur in this process, your pins may be lost.
+This mod changes to this behaviour:
 
-Always keep a backup of your character, with new patches it is reccomended to try adding discoveries to a map table, then verify that you still have your pins on your map.
+When reading map:
+- Skip deleting others pins from your map
+- Get all pins from the map table, including those you have made yourself
+->> Slash commands allows you to delete pins from your map.
+->> Map table can be rebuild if you want to erase all records.
 
-In case of lost map pins, a quick alt+F4 might be enough to avoid having your character saved.
+When writing to map:
+- Skip the read operation and bypass most of the original merge code
+- Read the tables data, and merge explored map with our own.
+- Read all pins on the table, merge with our own pins.
+- Player Pins (the pins players can make themselves), will be skipped by default.
+- Duplicate pins will be skipped.
+- The merged data will be sent by RPC to Owner/Area Host
+->> Slash command allows player to add their own Player Pins to the map
+ 
+Why have it like this:
+- We have a public map that everyone can read from, with a designated character adding pins for various world locations.
+- Teams have their own map, can share pins as they wish, and can read pins from public table without removing the teams pins and vice versa.
+- Players might want their own map table to share between alts.
 
+## Changelog
+
+1.1.0 Reworked from ground up as Valheim have made breaking changes, made safer approach to avoid risk of losing pins.
+1.0.4 Fixed error when writing more than once.
+1.0.3 Recompiled for Valheim V 0.217.24
+1.0.2 Recompiled for Hildirs patch.
+1.0.1 Fixed Null error when updating blank cartography table.
+1.0.0 Initial release.
