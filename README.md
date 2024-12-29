@@ -45,8 +45,8 @@ This mod changes to this behaviour:
 When reading map:
 - Skip deleting others pins from your map
 - Get all pins from the map table, including those you have made yourself
-->> Slash commands allows you to delete pins from your map.
-->> Map table can be rebuild if you want to erase all records.
+- >>Slash commands allows you to delete pins from your map.
+- >>Map table can be rebuild if you want to erase all records.
 
 When writing to map:
 - Skip the read operation and bypass most of the original merge code
@@ -55,7 +55,7 @@ When writing to map:
 - Player Pins (the pins players can make themselves), will be skipped by default.
 - Duplicate pins will be skipped.
 - The merged data will be sent by RPC to Owner/Area Host
-->> Slash command allows player to add their own Player Pins to the map
+- >>Slash command allows player to add their own Player Pins to the map
  
 Why have it like this:
 - We have a public map that everyone can read from, with a designated character adding pins for various world locations.
@@ -65,8 +65,13 @@ Why have it like this:
 ## Changelog
 
 1.1.0 Reworked from ground up as Valheim have made breaking changes, made safer approach to avoid risk of losing pins.
+
 1.0.4 Fixed error when writing more than once.
+
 1.0.3 Recompiled for Valheim V 0.217.24
+
 1.0.2 Recompiled for Hildirs patch.
+
 1.0.1 Fixed Null error when updating blank cartography table.
+
 1.0.0 Initial release.
